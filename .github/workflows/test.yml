@@ -1,6 +1,6 @@
 name: Run Terraform Stuff
 on:
-  - pull_request
+  - push
 
 jobs:
   terraform:
