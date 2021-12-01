@@ -1,0 +1,43 @@
+name: Run Terraform Stuff
+on:
+  - push
+
+jobs:
+  terraform:
+    name: Terraform
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Lint Code Base
+        uses: docker://github/super-linter:v3.14.4
+        env:
+          VALIDATE_ALL_CODEBASE: true
+          VALIDATE_MD: true
+          VALIDATE_TERRAFORM: true
+
+      - uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: 1.0.4
+
+      - name: Terraform Format
+        id: fmt
+        run: terraform fmt -check
+
+      - name: Terraform Init
+        id: init
+        run: terraform init
+
+      - name: Terraform Validate
+        id: validate
+        run: terraform validate -no-color
+
+      - name: Terraform Plan
+        id: plan
+        run: terraform plan -no-color
+
+      - name: Terraform Plan Status
+        if: steps.plan.outcome == 'failure'
+        run: exit 1
