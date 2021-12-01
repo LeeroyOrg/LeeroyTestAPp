@@ -92,3 +92,22 @@ resource "github_branch_protection" "rule2" {
     required_approving_review_count = 1
   }
 }
+
+resource "github_branch_protection" "rule2" {
+  repository_id       = github_repository.repo3.name
+  pattern             = "main"
+  enforce_admins      = true
+  allows_deletions    = false
+  allows_force_pushes = false
+
+  required_status_checks {
+    strict   = true
+    contexts = []
+  }
+
+  required_pull_request_reviews {
+    dismiss_stale_reviews           = false
+    require_code_owner_reviews      = false
+    required_approving_review_count = 2
+  }
+}
